@@ -2,6 +2,7 @@ package com.scaler.productservice.Controller;
 
 import com.scaler.productservice.dtos.CategoryDto;
 import com.scaler.productservice.models.Category;
+import com.scaler.productservice.models.Product;
 import com.scaler.productservice.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +22,13 @@ public class CategoryController {
 
 
     @GetMapping()
-    public List<String> getAllCategories(){
+    public List<Category> getAllCategories(){
         return categoryService.getAllCategories();
     }
 
 
-    @GetMapping("/{categoryId}")
-    public String getProductsInCategories(@PathVariable("categoryId") Long categoryId){
-        return "Getting Products in categories";
+    @GetMapping("/{category}")
+    public List<Product> getProductsInCategories(@PathVariable("category") String category){
+        return categoryService.getProductsInCategory(category);
     }
 }

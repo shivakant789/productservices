@@ -55,7 +55,7 @@ public class ProductController{
         ResponseEntity<Product> response=new ResponseEntity(
                 productService.getSingleProduct(productId),
                 headers,
-                HttpStatus.NOT_FOUND
+                HttpStatus.OK
         );
        // GetSingleProductResponseDto responseDto= new GetSingleProductResponseDto();
         // responseDto.setProduct(productService.getSingleProduct(productId));
@@ -91,8 +91,13 @@ public class ProductController{
 
 
     @DeleteMapping("/{productId}")
-    public boolean deleteProduct(@PathVariable("productId") Long productId,@RequestBody ProductDto productDto){
+    public Optional<Product> deleteProduct(@PathVariable("productId") Long productId,@RequestBody ProductDto productDto)throws NotFoundException{
        // return "Deleting the Product with id : "+productId;
+        Optional<Product> productOptional = productService.deleteProduct(productId);
+
+        if (productOptional.isEmpty()) {
+            throw new NotFoundException("No Product with product id: " + productId);
+        }
         return productService.deleteProduct(productId);
     }
 

@@ -5,22 +5,23 @@ import com.scaler.productservice.exceptions.NotFoundException;
 import com.scaler.productservice.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class FakeStoreClient {
     private RestTemplateBuilder restTemplateBuilder;
 
-    private FakeStoreClient fakeStoreClient;
 
-    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder,FakeStoreClient fakeStoreClient) {
+
+    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplateBuilder = restTemplateBuilder;
-        this.fakeStoreClient=fakeStoreClient;
     }
-    List<FakeStoreProductDto> getAllProducts(){
+    public List<FakeStoreProductDto> getAllProducts(){
         RestTemplate restTemplate= restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductDto[]> l= restTemplate.getForEntity(
                 "https://fakestoreapi.com/products",
@@ -29,8 +30,16 @@ public class FakeStoreClient {
        return Arrays.asList(l.getBody());
     }
 
-    Optional<FakeStoreProductDto> getSingleProduct(Long productId) throws NotFoundException {
-        return null;
+    public FakeStoreProductDto getSingleProduct(Long productId) throws NotFoundException {
+        RestTemplate restTemplate= restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto> response= restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
+                FakeStoreProductDto.class,productId);
+
+        FakeStoreProductDto fakeStoreProductDto=response.getBody();
+
+
+
+        return fakeStoreProductDto;
     }
 
     FakeStoreProductDto addNewProduct(ProductDto product) {
@@ -45,6 +54,8 @@ public class FakeStoreClient {
     FakeStoreProductDto replaceProduct(Long productId, Product product) {
         return null;
     }
+
+
 
     FakeStoreProductDto deleteProduct(Long productId) {
         return null;
