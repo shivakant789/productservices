@@ -95,24 +95,10 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Product updateProduct(Long productId, Product product) {
-        RestTemplate restTemplate= restTemplateBuilder.build();
+        FakeStoreProductDto fakeStoreProductDto=fakeStoreClient.updateProduct(productId,product);
 
-        FakeStoreProductDto fakeStoreProductDto= new FakeStoreProductDto();
-        fakeStoreProductDto.setDescription(product.getDesciption());
-        fakeStoreProductDto.setImage(product.getImageUrl());
-        fakeStoreProductDto.setPrice(product.getPrice());
-        fakeStoreProductDto.setTitle(product.getTitle());
-        fakeStoreProductDto.setCategory(product.getCategory().getName());
 
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity=requestForEntity(
-                HttpMethod.PATCH,
-                "https://fakestoreapi.com/products/{id}",
-                fakeStoreProductDto,
-                FakeStoreProductDto.class,
-                productId
-        );
-
-        return convertFakeStoreProductDtoToProduct(fakeStoreProductDtoResponseEntity.getBody());
+        return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
     }
 
     @Override
@@ -122,21 +108,14 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Optional<Product> deleteProduct(Long productId) throws NotFoundException{
-        RestTemplate restTemplate= restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity=requestForEntity(
-                HttpMethod.DELETE,
-                "https://fakestoreapi.com/products/{id}",
-                 null,
-                FakeStoreProductDto.class,
-                productId
-        );
+        FakeStoreProductDto fakeStoreProductDto= fakeStoreClient.deleteProduct(productId);
 
-        if(fakeStoreProductDtoResponseEntity.getBody()==null){
+        if(fakeStoreProductDto==null){
             return Optional.empty();
         }
 
 
-        return  Optional.of(convertFakeStoreProductDtoToProduct(fakeStoreProductDtoResponseEntity.getBody()));
+        return  Optional.of(convertFakeStoreProductDtoToProduct(fakeStoreProductDto));
 
 
 

@@ -7,6 +7,7 @@ import com.scaler.productservice.dtos.ProductResponseDto;
 import com.scaler.productservice.exceptions.NotFoundException;
 import com.scaler.productservice.models.Category;
 import com.scaler.productservice.models.Product;
+import com.scaler.productservice.repositries.ProductRepository;
 import com.scaler.productservice.service.FakeStoreProductService;
 import com.scaler.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,13 @@ public class ProductController{
 
 
     private ProductService productService;
+
+    private ProductRepository productRepository;
+
+//    public ProductController(ProductService productService,ProductRepository productRepository){
+//        this.productService=productService;
+//        this.productRepository=productRepository;
+//    }
 
     @GetMapping()
     public List<Product> getAllProducts(){
@@ -67,8 +75,15 @@ public class ProductController{
     public ResponseEntity<Product> addNewProduct(@RequestBody ProductDto productDto){
         //return "Add new Product"+productDto;
 
-        Product newproduct= productService.addNewProduct(productDto);
+       // Product newproduct= productService.addNewProduct(productDto);
 
+        Product newproduct= new Product();
+        newproduct.setDesciption(productDto.getDescription());
+        newproduct.setImageUrl(productDto.getImage());
+        newproduct.setTitle(productDto.getTitle());
+        newproduct.setPrice(productDto.getPrice());
+
+        newproduct=productRepository.save(newproduct);
         ResponseEntity<Product> response= new ResponseEntity<>(newproduct,HttpStatus.OK);
 
         return  response;
